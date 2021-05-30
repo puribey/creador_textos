@@ -1,6 +1,6 @@
-import { crearServidor } from "./Servidor.js";
-import { crearApiTextos } from "./negocio/apis/apiTextos.js";
-import { crearDaoTextosCache } from "./persistencia/daos/daoTextosCache.js";
+import { crearServidor } from "./servidor.js";
+import { crearApiTextos } from "./apiTextos.js";
+import { crearDaoTextosCache } from "./daoTextosCache.js";
 import axios from "axios";
 import fs from "fs";
 import FormData from "form-data";
@@ -14,7 +14,7 @@ async function main() {
   const filePath = "./fileToUpload/worksheetskindergarten.pdf";
   const form = new FormData();
   form.append("demo", fs.createReadStream(filePath));
-  form.append("idUsuario", "1a2s3d4f");
+  form.append("idUsuario", "43820248");
   form.append("titulo", "Un nuevo cuento");
   form.append("genero", "poesia");
   form.append("tienePdf", "true");
@@ -25,6 +25,8 @@ async function main() {
       data: form,
       headers: {
         "Content-Type": `multipart/form-data; boundary=${form._boundary}`,
+        "x-access-token":
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQzODIwMjQ4IiwiaWF0IjoxNjIyNDE2ODI5fQ.-8afDQtgoRWqvtfR_4E2VhzpFOibK-P_mIaov-kYv9o",
       },
     });
     console.log("crear texto res:", resPost.data);

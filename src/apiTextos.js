@@ -1,7 +1,6 @@
-import { crearErrorIdTextoRepetido } from "../errores/ErrorIdTextoRepetido.js";
-import { crearErrorTextoNoEncontrado } from "../errores/ErrorTextoNoEncontrado.js";
+import { crearErrorIdTextoRepetido } from "./errores/ErrorIdTextoRepetido.js";
 
-import { crearTexto } from "../modelos/Texto.js";
+import { crearTexto } from "./texto.js";
 
 function crearApiTextos({ daoTextos }) {
   return {

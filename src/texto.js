@@ -1,5 +1,5 @@
-import { crearErrorDatosInvalidos } from "../errores/ErrorDatosInvalidos.js";
-import { isEmpty } from "../../utils/index.js";
+import { crearErrorDatosInvalidos } from "./errores/ErrorDatosInvalidos.js";
+import { isEmpty } from "./utils/index.js";
 
 /**
  * TEXTO
