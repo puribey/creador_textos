@@ -8,8 +8,8 @@ import { isEmpty } from "../../utils/index.js";
  * titulo: string
  * genero: enum('ficcion', 'no_ficcion', 'poesia')
  * tienePdf: boolean
- * urlPdf: string
- * contenido: string
+ * urlPdf?: string
+ * contenido?: string
  */
 
 let nextId = 1;
@@ -17,13 +17,7 @@ let nextId = 1;
 function crearTexto(datos, idTexto = null) {
   const generosPermitidos = ["ficcion", "no_ficcion", "poesia"];
   const texto = {};
-
-  // TODO
-  if (!datos.idUsuario) {
-    throw crearErrorDatosInvalidos("usuario invalido");
-  } else {
-    texto.idUsuario = datos.idUsuario;
-  }
+  texto.idUsuario = datos.idUsuario;
 
   if (!datos.titulo) {
     throw crearErrorDatosInvalidos("falta el titulo");
@@ -37,20 +31,12 @@ function crearTexto(datos, idTexto = null) {
     texto.genero = datos.genero;
   }
 
-  if (tienePdf && !isEmpty(urlPdf)) {
+  if (datos.tienePdf && isEmpty(datos.urlPdf)) {
     throw crearErrorDatosInvalidos("pdf no adjuntado");
-  } else {
-    texto.tienePdf = datos.tienePdf;
-    texto.urlPdf = datos.urlPdf;
-    texto.contenido = null;
   }
 
-  if (!tienePdf && !isEmpty(contenido)) {
+  if (!datos.tienePdf && isEmpty(datos.contenido)) {
     throw crearErrorDatosInvalidos("este texto no tiene contenido");
-  } else {
-    texto.tienePdf = datos.tienePdf;
-    texto.contenido = datos.contenido;
-    texto.urlPdf = null;
   }
 
   if (idTexto) {
@@ -60,6 +46,10 @@ function crearTexto(datos, idTexto = null) {
   } else {
     texto.idTexto = nextId++;
   }
+
+  texto.tienePdf = datos.tienePdf;
+  texto.contenido = datos.contenido || null;
+  texto.urlPdf = datos.urlPdf || null;
 
   return texto;
 }

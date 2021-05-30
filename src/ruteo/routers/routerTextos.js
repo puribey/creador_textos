@@ -1,15 +1,16 @@
 import express from "express";
-import fileUpload from "../../middleware/fileUpload.js";
+import upload from "../../middleware/fileUpload.js";
 
 function crearRouterTextos(apiTextos) {
   const routerTextos = express.Router();
 
-  routerTextos.post("/", fileUpload, async (req, res, next) => {
+  routerTextos.post("/", upload, async (req, res, next) => {
     // TODO check for user permissions with token
-    console.log("req", req.body);
-    if (req.pdfName) {
-      req.body.urlPdf = "";
+    req.body.tienePdf = req.body.tienePdf === "true";
+    if (req.file) {
+      req.body.urlPdf = `http://localhost:8080/${req.file.originalname}`;
     }
+
     try {
       const texto = await apiTextos.addNew(req.body);
       res.status(201).json(texto);
@@ -30,6 +31,7 @@ function crearRouterTextos(apiTextos) {
     } else {
       res.status(500);
     }
+    console.log("Error:", error.message);
     res.json({ message: error.message });
   });
 

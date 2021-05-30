@@ -1,4 +1,4 @@
-import { crearServidor } from "./ruteo/Servidor.js";
+import { crearServidor } from "./Servidor.js";
 import { crearApiTextos } from "./negocio/apis/apiTextos.js";
 import { crearDaoTextosCache } from "./persistencia/daos/daoTextosCache.js";
 import axios from "axios";
@@ -14,6 +14,9 @@ async function main() {
   const filePath = "./fileToUpload/worksheetskindergarten.pdf";
   const form = new FormData();
   form.append("demo", fs.createReadStream(filePath));
+  form.append("idUsuario", "1a2s3d4f");
+  form.append("titulo", "Un nuevo cuento");
+  form.append("genero", "poesia");
   form.append("tienePdf", "true");
   try {
     const resPost = await axios({
@@ -24,7 +27,7 @@ async function main() {
         "Content-Type": `multipart/form-data; boundary=${form._boundary}`,
       },
     });
-    console.log("Upload response", resPost.data);
+    console.log("crear texto res:", resPost.data);
   } catch (err) {
     console.log(err.message);
   }
