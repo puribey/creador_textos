@@ -1,32 +1,36 @@
 import { crearServidor } from "./ruteo/Servidor.js";
 import { crearApiTextos } from "./negocio/apis/apiTextos.js";
-import { crearClienteRest } from "../test/ClienteRest.js";
 import { crearDaoTextosCache } from "./persistencia/daos/daoTextosCache.js";
+import axios from "axios";
+import fs from "fs";
+import FormData from "form-data";
 
 async function main() {
   const daoTextos = crearDaoTextosCache();
 
   const aplicacion = crearApiTextos({ daoTextos });
-  const servidor = await crearServidor({ aplicacion, port: 8080 });
+  await crearServidor({ aplicacion, port: 8080 });
 
-  const cliente = crearClienteRest({
-    url: `http://localhost:${servidor.port}/api/textos`,
-  });
+  const filePath = "./fileToUpload/worksheetskindergarten.pdf";
+  const form = new FormData();
+  form.append("demo", fs.createReadStream(filePath));
+  form.append("tienePdf", "true");
+  try {
+    const resPost = await axios({
+      method: "post",
+      url: "http://localhost:8080/api/textos",
+      data: form,
+      headers: {
+        "Content-Type": `multipart/form-data; boundary=${form._boundary}`,
+      },
+    });
+    console.log("Upload response", resPost.data);
+  } catch (err) {
+    console.log(err.message);
+  }
 
-  await cliente.post({
-    nombre: "mariano",
-    apellido: "aquino",
-    edad: 34,
-    dni: "123",
-  });
-
-  const { data } = await cliente.getAll();
-
-  console.log(data);
-
-  servidor.close();
-
-  mongoClient.close();
+  // servidor.close();
+  // mongoClient.close();
 }
 
 main();

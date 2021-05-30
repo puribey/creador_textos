@@ -1,6 +1,7 @@
 import express from "express";
 
 import { crearRouterTextos } from "./routers/routerTextos.js";
+// import { crearRouterUsuarios } from "./routers/routerUsuarios.js";
 
 function crearServidor({ aplicacion, port = 0 }) {
   const app = express();
@@ -10,7 +11,7 @@ function crearServidor({ aplicacion, port = 0 }) {
   app.use(express.static("uploads"));
 
   app.use("/api/textos", crearRouterTextos(aplicacion));
-  app.use("/api/usuarios", crearRouterTextos(aplicacion));
+  // app.use("/api/usuarios", crearRouterUsuarios(aplicacion));
 
   return new Promise((resolve, reject) => {
     const server = app
@@ -20,6 +21,7 @@ function crearServidor({ aplicacion, port = 0 }) {
       })
       .once("listening", () => {
         server.port = server.address().port;
+        console.log(`Listening on http://localhost:${server.port}/`);
         resolve(server);
       });
   });
