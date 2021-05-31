@@ -16,6 +16,7 @@ function crearServidor({ aplicacion, port = 0 }) {
   app.post("/api/textos", verifyToken, async (req, res, next) => {
     // TODO usar jwt para validar que el usuario pueda subir el pdf
     console.log(req.body); // body vacio!!
+    // TODO checkear que tienePdf este en true antes de subir el texto pero no puedo acceder al body hasta despues de hacer el upload.
     try {
       await upload(req, res);
 
