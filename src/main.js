@@ -1,41 +1,88 @@
-import { crearServidor } from "./servidor.js";
-import { crearApiTextos } from "./apiTextos.js";
+import { crearCUTextos } from "./crearCUTextos.js";
 import { crearDaoTextosCache } from "./daoTextosCache.js";
-import axios from "axios";
-import fs from "fs";
-import FormData from "form-data";
+
+const textoConPdf = {
+  idUsuario: "1a2s3d4f",
+  titulo: "Texto uno",
+  genero: "poesia",
+  tienePdf: true,
+  urlPdf: "http://localhost:8080/worksheetskindergarten.pdf",
+};
+const textoSinPdf = {
+  idUsuario: "1a2s3d4f",
+  titulo: "Texto uno",
+  genero: "poesia",
+  tienePdf: false,
+  contenido: "Lorem ipsum",
+};
 
 async function main() {
   const daoTextos = crearDaoTextosCache();
+  const casoUsoTextos = crearCUTextos({ daoTextos });
 
-  const aplicacion = crearApiTextos({ daoTextos });
-  await crearServidor({ aplicacion, port: 8080 });
+  let res;
+  res = await casoUsoTextos.addNew(textoConPdf);
+  console.log("Res caso feliz con pdf", res);
 
-  const filePath = "./fileToUpload/worksheetskindergarten.pdf";
-  const form = new FormData();
-  form.append("demo", fs.createReadStream(filePath));
-  form.append("idUsuario", "43820248");
-  form.append("titulo", "Un nuevo cuento");
-  form.append("genero", "poesia");
-  form.append("tienePdf", "true");
+  res = await casoUsoTextos.addNew(textoSinPdf);
+  console.log("Res caso feliz sin pdf", res);
+
+  /**
+   * Error: Caso texto con mismo id
+   */
   try {
-    const resPost = await axios({
-      method: "post",
-      url: "http://localhost:8080/api/textos",
-      data: form,
-      headers: {
-        "Content-Type": `multipart/form-data; boundary=${form._boundary}`,
-        "x-access-token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQzODIwMjQ4IiwiaWF0IjoxNjIyNDE2ODI5fQ.-8afDQtgoRWqvtfR_4E2VhzpFOibK-P_mIaov-kYv9o",
-      },
-    });
-    console.log("crear texto res:", resPost.data);
+    res = await casoUsoTextos.addNew({ ...textoSinPdf, idTexto: 1 });
   } catch (err) {
     console.log(err.message);
   }
 
-  // servidor.close();
-  // mongoClient.close();
+  /**
+   * Error: Caso con texto sin pdf y sin contenido
+   */
+  try {
+    res = await casoUsoTextos.addNew({ ...textoSinPdf, contenido: null });
+  } catch (err) {
+    console.log(err.message);
+  }
+
+  /**
+   * Error: Caso con url pdf invalida
+   */
+  try {
+    res = await casoUsoTextos.addNew({ ...textoConPdf, urlPdf: "jfsbadkfbkb" });
+  } catch (err) {
+    console.log(err.message);
+  }
+
+  /**
+   * Error: Caso con genero inexistente
+   */
+  try {
+    res = await casoUsoTextos.addNew({ ...textoConPdf, genero: "no_existe" });
+  } catch (err) {
+    console.log(err.message);
+  }
+
+  /**
+   * Error: Caso con titulo vacío
+   */
+  try {
+    res = await casoUsoTextos.addNew({ ...textoConPdf, titulo: "" });
+  } catch (err) {
+    console.log(err.message);
+  }
+
+  /**
+   * Trae 2 textos por ese usuario
+   */
+  res = await casoUsoTextos.getAllByUser({ idUsuario: "1a2s3d4f" });
+  console.log(res);
+
+  /**
+   * Usuario sin textos subidos = []
+   */
+  res = await casoUsoTextos.getAllByUser({ idUsuario: "4f3d2s1a" });
+  console.log(res);
 }
 
 main();

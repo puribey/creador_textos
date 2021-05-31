@@ -1,5 +1,5 @@
 import { crearErrorDatosInvalidos } from "./errores/ErrorDatosInvalidos.js";
-import { isEmpty } from "./utils/index.js";
+import { isEmpty, isValidURL } from "./utils/index.js";
 
 /**
  * TEXTO
@@ -33,6 +33,10 @@ function crearTexto(datos, idTexto = null) {
 
   if (datos.tienePdf && isEmpty(datos.urlPdf)) {
     throw crearErrorDatosInvalidos("pdf no adjuntado");
+  }
+
+  if (datos.tienePdf && !isValidURL(datos.urlPdf)) {
+    throw crearErrorDatosInvalidos("la url del pdf no es válida");
   }
 
   if (!datos.tienePdf && isEmpty(datos.contenido)) {

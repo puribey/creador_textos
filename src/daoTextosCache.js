@@ -2,7 +2,7 @@ function crearDaoTextosCache() {
   const textos = [];
 
   return {
-    addUnique: async (texto, claveUnica) => {
+    addNew: async (texto, claveUnica) => {
       const existe = textos.some((e) => {
         return e[claveUnica] === texto[claveUnica];
       });
@@ -12,6 +12,9 @@ function crearDaoTextosCache() {
         textos.push(texto);
         return { added: 1 };
       }
+    },
+    getAllByUser: async ({ idUsuario }) => {
+      return textos.filter((txt) => txt.idUsuario === idUsuario);
     },
   };
 }
