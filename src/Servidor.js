@@ -13,17 +13,25 @@ function crearServidor({ aplicacion, port = 0 }) {
   app.use(express.json());
   app.use(express.static(path.join(__dirname, "uploads")));
 
-  app.post("/api/textos", verifyToken, upload, async (req, res, next) => {
-    // TODO usar jwt para validar que el usuario pueda subir el texto
-    req.body.tienePdf = req.body.tienePdf === "true";
-    if (req.file) {
-      req.body.urlPdf = `http://localhost:8080/${req.file.originalname}`;
-    }
-
+  app.post("/api/textos", verifyToken, async (req, res, next) => {
+    // TODO usar jwt para validar que el usuario pueda subir el pdf
+    console.log(req.body); // body vacio!!
     try {
+      await upload(req, res);
+
+      req.body.tienePdf = req.body.tienePdf === "true";
+      if (req.file) {
+        req.body.urlPdf = `http://localhost:8080/${req.file.originalname}`;
+      }
+
       const texto = await aplicacion.addNew(req.body);
       res.status(201).json(texto);
     } catch (error) {
+      if (error.code == "LIMIT_FILE_SIZE") {
+        return res.status(500).send({
+          message: "File size should be less than 5MB",
+        });
+      }
       next(error);
     }
   });

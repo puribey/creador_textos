@@ -1,4 +1,5 @@
 import multer from "multer";
+import util from "util";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -25,4 +26,6 @@ const upload = multer({
   },
 }).single("demo");
 
-export default upload;
+let fileUpload = util.promisify(upload);
+
+export default fileUpload;
