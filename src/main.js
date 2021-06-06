@@ -1,4 +1,4 @@
-import { crearServidor } from "./servidor.js";
+import { crearServidor } from "./server.js";
 import { crearApiTextos } from "./apiTextos.js";
 import { crearDaoTextosCache } from "./daoTextosCache.js";
 import axios from "axios";
@@ -15,6 +15,7 @@ async function main() {
   const form = new FormData();
   form.append("demo", fs.createReadStream(filePath));
   form.append("idUsuario", "43820248");
+  // form.append("idUsuario", "00000000"); // Usuario falso, debe borrar archivo subido
   form.append("titulo", "Un nuevo cuento");
   form.append("genero", "poesia");
   form.append("tienePdf", "true");
