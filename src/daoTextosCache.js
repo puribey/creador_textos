@@ -13,6 +13,9 @@ function crearDaoTextosCache() {
         return { added: 1 };
       }
     },
+    getAllByUser: async ({ idUsuario }) => {
+      return textos.filter((txt) => txt.idUsuario === idUsuario);
+    },
   };
 }
 

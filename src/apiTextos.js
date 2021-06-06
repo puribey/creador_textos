@@ -12,6 +12,9 @@ function crearApiTextos({ daoTextos }) {
       }
       return texto;
     },
+    getAllByUser: async (idUsuario) => {
+      return await daoTextos.getAllByUser(idUsuario);
+    },
   };
 }
 
