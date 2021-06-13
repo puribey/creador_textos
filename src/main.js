@@ -1,5 +1,4 @@
 import { crearServidor } from "./server.js";
-import { crearApiTextos } from "./apiTextos.js";
 import { crearDaoTextosCache } from "./daoTextosCache.js";
 import axios from "axios";
 import fs from "fs";
@@ -7,14 +6,12 @@ import FormData from "form-data";
 
 async function main() {
   const daoTextos = crearDaoTextosCache();
-
-  const aplicacion = crearApiTextos({ daoTextos });
-  await crearServidor({ aplicacion, port: 8080 });
+  await crearServidor({ port: 8080 });
 
   const filePath = "./fileToUpload/worksheetskindergarten.pdf";
   const form = new FormData();
   form.append("demo", fs.createReadStream(filePath));
-  form.append("idUsuario", "43820248");
+  // form.append("idUsuario", "43820248");
   // form.append("idUsuario", "00000000"); // Usuario falso, debe borrar archivo subido
   form.append("titulo", "Un nuevo cuento");
   form.append("genero", "poesia");
@@ -22,7 +19,7 @@ async function main() {
   try {
     const resPost = await axios({
       method: "post",
-      url: "http://localhost:8080/api/textos",
+      url: "http://localhost:8080/textos",
       data: form,
       headers: {
         "Content-Type": `multipart/form-data; boundary=${form._boundary}`,

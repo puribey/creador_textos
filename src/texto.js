@@ -1,7 +1,5 @@
 import { crearErrorDatosInvalidos } from "./errores/ErrorDatosInvalidos.js";
-import { crearErrorUsuarioInvalido } from "./errores/ErrorUsuarioInvalido.js";
 import { isEmpty } from "./utils/index.js";
-import fs from "fs";
 
 /**
  * TEXTO
@@ -20,14 +18,7 @@ function crearTexto(datos, idTexto = null) {
   const generosPermitidos = ["ficcion", "no_ficcion", "poesia"];
   const texto = {};
 
-  if (datos.idUsuario !== datos.decodedUserId) {
-    if (datos.pathToUpload) {
-      fs.unlinkSync(datos.pathToUpload);
-    }
-    throw crearErrorUsuarioInvalido("Usuario no identificado");
-  } else {
-    texto.idUsuario = datos.idUsuario;
-  }
+  texto.idUsuario = datos.userId;
 
   if (!datos.titulo) {
     throw crearErrorDatosInvalidos("falta el titulo");
@@ -50,9 +41,6 @@ function crearTexto(datos, idTexto = null) {
   }
 
   if (!datos.tienePdf && !isEmpty(datos.urlPdf)) {
-    if (datos.pathToUpload) {
-      fs.unlinkSync(datos.pathToUpload);
-    }
     throw crearErrorDatosInvalidos(
       "el texto que se intenta crear no deberia contener archivos adjuntos"
     );

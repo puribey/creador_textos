@@ -2,9 +2,9 @@ function crearDaoTextosCache() {
   const textos = [];
 
   return {
-    addUnique: async (texto, claveUnica) => {
+    addUnique: async (texto, titulo) => {
       const existe = textos.some((e) => {
-        return e[claveUnica] === texto[claveUnica];
+        return e[titulo] === texto[titulo];
       });
       if (existe) {
         return { added: 0 };
